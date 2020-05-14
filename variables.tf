@@ -6,6 +6,16 @@ variable "name_prefix" {
   type        = string
 }
 
+variable "configurations" {
+  description = "A list of configurations that will trigger the sidecred lambda."
+  type        = list(object({ namespace = string, config = string }))
+}
+
+variable "environment" {
+  description = "Environment variables for the lambda. This is how you configure sidecred."
+  type        = map(string)
+}
+
 variable "s3_bucket" {
   description = "The bucket where the lambda function is uploaded."
   type        = string
@@ -28,23 +38,6 @@ variable "source_code_hash" {
   description = "Used to trigger updates. Must be set to a base64-encoded SHA256 hash of the package file specified with either filename or s3_key."
   type        = string
   default     = null
-}
-
-variable "configurations" {
-  description = "A list of configurations that will trigger the sidecred lambda."
-  type        = list(object({ namespace = string, config = string }))
-}
-
-variable "environment" {
-  description = "Environment variables for the lambda. This is how you configure sidecred."
-  type        = map(string)
-  default = {
-    SIDECRED_STS_PROVIDER_ENABLED          = "true"
-    SIDECRED_STS_PROVIDER_SESSION_DURATION = "20m"
-    SIDECRED_SECRET_STORE_BACKEND          = "ssm"
-    SIDECRED_SSM_STORE_PATH_TEMPLATE       = "/sidecred/{{ .Namespace }}/{{ .Name }}"
-    SIDECRED_DEBUG                         = "true"
-  }
 }
 
 variable "tags" {

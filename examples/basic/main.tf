@@ -16,6 +16,14 @@ module "sidecred" {
     config    = "config.yml"
   }]
 
+  environment = {
+    SIDECRED_STS_PROVIDER_ENABLED          = "true"
+    SIDECRED_STS_PROVIDER_SESSION_DURATION = "20m"
+    SIDECRED_SECRET_STORE_BACKEND          = "ssm"
+    SIDECRED_SSM_STORE_PATH_TEMPLATE       = "/sidecred/{{ .Namespace }}/{{ .Name }}"
+    SIDECRED_DEBUG                         = "true"
+  }
+
   tags = {
     terraform   = "true"
     environment = "dev"
