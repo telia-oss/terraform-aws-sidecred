@@ -3,16 +3,21 @@ terraform {
 }
 
 provider "aws" {
-  version = ">= 2.27"
+  version = ">= 2.61"
   region  = var.region
 }
 
-module "template" {
+module "sidecred" {
   source      = "../../"
   name_prefix = var.name_prefix
 
+  configurations = [{
+    namespace = "example"
+    config    = "config.yml"
+  }]
+
   tags = {
+    terraform   = "true"
     environment = "dev"
-    terraform   = "True"
   }
 }
