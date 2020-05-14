@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	module "github.com/telia-oss/terraform-module-template/test"
+	module "github.com/telia-oss/terraform-aws-sidecred/test"
 
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"

@@ -1,4 +1,4 @@
-module github.com/telia-oss/terraform-module-template
+module github.com/telia-oss/terraform-aws-sidecred
 
 go 1.13
 
