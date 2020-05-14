@@ -1,18 +1,15 @@
 
 
-# Terraform module template
+# terraform-aws-sidecred
 
-[![latest release](https://img.shields.io/github/v/release/telia-oss/terraform-module-template?style=flat-square)](https://github.com/telia-oss/terraform-module-template/releases/latest)
-[![build status](https://img.shields.io/github/workflow/status/telia-oss/terraform-module-template/workflow?label=build&logo=github&style=flat-square)](https://github.com/telia-oss/terraform-module-template/actions?query=workflow%3Atest)
+[![latest release](https://img.shields.io/github/v/release/telia-oss/terraform-aws-sidecred?style=flat-square)](https://github.com/telia-oss/terraform-aws-sidecred/releases/latest)
+[![build status](https://img.shields.io/github/workflow/status/telia-oss/terraform-aws-sidecred/workflow?label=build&logo=github&style=flat-square)](https://github.com/telia-oss/terraform-aws-sidecred/actions?query=workflow%3Atest)
 
-Terraform module which creates *describe your intent* resources on AWS.
+A terraform module for deploying [sidecred](https://github.com/telia-oss/sidecred) in your AWS environment.
 
 ## Usage
 
-Use this template to scaffold a new terraform module. Remember to change the following:
-- The descriptions and build badges in this [README](README.md).
-- Update the [basic](examples/basic/README.md) and [complete](examples/complete/README.md) examples
-- Update the [e2e tests](test/).
+See examples. If you want to learn more about how to use sidecred, check out the [README](https://github.com/telia-oss/sidecred/blob/master/README.md) and [documentation](https://pkg.go.dev/github.com/telia-oss/sidecred).
 
 ## Authors
 

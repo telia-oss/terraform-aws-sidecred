@@ -1,6 +1,6 @@
 variable "name_prefix" {
   type    = string
-  default = "module-basic-example"
+  default = "sidecred-basic-example"
 }
 
 variable "region" {
