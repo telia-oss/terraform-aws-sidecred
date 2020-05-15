@@ -1,0 +1,4 @@
+- type: random
+  name: random-string-3
+  config:
+    length: 20

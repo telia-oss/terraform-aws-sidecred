@@ -7,8 +7,13 @@ output "arn" {
 }
 
 output "role_arn" {
-  description = "The Amazon Resource Name (ARN) specifying the sidecred lambda execution role."
+  description = "The ARN of the sidecred lambda execution role."
   value       = module.lambda.role_arn
+}
+
+output "role_name" {
+  description = "The name of the sidecred lambda execution role."
+  value       = module.lambda.role_name
 }
 
 output "bucket_id" {

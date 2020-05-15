@@ -1,7 +1,6 @@
 package module
 
 import (
-	"strings"
 	"testing"
 	"time"
 
@@ -17,7 +16,7 @@ type Expectations struct {
 }
 
 // RunTestSuite for the module.
-func RunTestSuite(t *testing.T, lambdaARN, region string, expected Expectations) {
+func RunTestSuite(t *testing.T, lambdaARN string, events []string, region string, expected Expectations) {
 	var (
 		sess      = NewSession(t, region)
 		testStart = time.Now()
@@ -25,19 +24,22 @@ func RunTestSuite(t *testing.T, lambdaARN, region string, expected Expectations)
 
 	time.Sleep(5 * time.Second)
 
-	// Invoke sidecred (and wait for it to finish).
-	InvokeFunction(t, sess, lambdaARN, strings.TrimSpace(`
-{"namespace":"example","config_path":"example/config.yml","state_path":"example/config.yml.state"}
-	`))
+	// Invoke sidecred using the specified events
+	// (and wait for it to finish execution)
+	for _, event := range events {
+		InvokeFunction(t, sess, lambdaARN, event)
+	}
 
 	params := ListParameters(t, sess, expected.Parameters)
 	for _, param := range expected.Parameters {
 		p, ok := params[param]
 		if !ok {
 			t.Errorf("could not find expected parameter: %s", param)
+			continue
 		}
-		if d := p.LastModifiedDate; !d.After(testStart) {
+		if d := p.LastModifiedDate; d.Before(testStart) {
 			t.Errorf("parameter '%s' was not updated: %s", param, d.Format(time.RFC3339))
+			continue
 		}
 	}
 }
