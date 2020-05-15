@@ -19,13 +19,13 @@ variable "environment" {
 variable "s3_bucket" {
   description = "The bucket where the lambda function is uploaded."
   type        = string
-  default     = "sidecred-lambda/v0.3.0.zip"
+  default     = "telia-oss"
 }
 
 variable "s3_key" {
   description = "The s3 key for the Lambda artifact."
   type        = string
-  default     = "telia-oss"
+  default     = "sidecred-lambda/v0.4.1.zip"
 }
 
 variable "filename" {

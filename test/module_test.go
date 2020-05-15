@@ -2,6 +2,7 @@ package module_test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	module "github.com/telia-oss/terraform-aws-sidecred/test"
@@ -21,16 +22,11 @@ func TestModule(t *testing.T) {
 		{
 			description: "basic example",
 			directory:   "../examples/basic",
-			name:        fmt.Sprintf("module-basic-test-%s", random.UniqueId()),
+			name:        fmt.Sprintf("sidecred-basic-test-%s", random.UniqueId()),
 			region:      "eu-west-1",
-			expected:    module.Expectations{},
-		},
-		{
-			description: "complete example",
-			directory:   "../examples/complete",
-			name:        fmt.Sprintf("module-complete-test-%s", random.UniqueId()),
-			region:      "eu-west-1",
-			expected:    module.Expectations{},
+			expected: module.Expectations{
+				Parameters: []string{"/sidecred/example/random-string-1", "/sidecred/example/random-string-2"},
+			},
 		},
 	}
 
@@ -43,7 +39,8 @@ func TestModule(t *testing.T) {
 				TerraformDir: tc.directory,
 
 				Vars: map[string]interface{}{
-					"name_prefix": tc.name,
+					// Bucket name needs to be lowercase.
+					"name_prefix": strings.ToLower(tc.name),
 					"region":      tc.region,
 				},
 
@@ -55,13 +52,8 @@ func TestModule(t *testing.T) {
 			defer terraform.Destroy(t, options)
 			terraform.InitAndApply(t, options)
 
-			tc.expected.NamePrefix = tc.name
-
-			module.RunTestSuite(t,
-				tc.region,
-				terraform.Output(t, options, "name_prefix"),
-				tc.expected,
-			)
+			lambdaARN := terraform.Output(t, options, "arn")
+			module.RunTestSuite(t, lambdaARN, tc.region, tc.expected)
 		})
 	}
 }
