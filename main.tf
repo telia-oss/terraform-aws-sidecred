@@ -86,8 +86,8 @@ data "aws_iam_policy_document" "lambda" {
 
 resource "aws_cloudwatch_event_rule" "main" {
   count               = length(local.configs)
-  name                = "${local.configs[count.index].namespace}-sidecred-trigger"
-  description         = "${local.configs[count.index].namespace} sidecred trigger."
+  name_prefix         = "sidecred-${local.configs[count.index].namespace}"
+  description         = "Trigger for ${local.configs[count.index].config_path}."
   schedule_expression = "rate(10 minutes)"
   tags                = var.tags
 }
@@ -101,7 +101,7 @@ resource "aws_cloudwatch_event_target" "main" {
 
 resource "aws_lambda_permission" "main" {
   count         = length(local.configs)
-  statement_id  = "${local.configs[count.index].namespace}-sidecred-permission"
+  statement_id  = aws_cloudwatch_event_rule.main[count.index].id
   function_name = module.lambda.arn
   action        = "lambda:InvokeFunction"
   principal     = "events.amazonaws.com"
