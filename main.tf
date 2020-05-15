@@ -6,13 +6,15 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 locals {
+  # Lambda requires that the bucket is located in the same region as the Lambda. The telia-oss bucket replicates objects to most regions.
+  s3_bucket = var.filename == null && var.s3_bucket == "telia-oss" ? "telia-oss-${data.aws_region.current.name}" : var.s3_bucket
+
+  # Add a state_path for each configuration.
   configs = [for c in var.configurations : {
     namespace   = c.namespace
     config_path = "${c.namespace}/${basename(c.config)}"
     state_path  = "${c.namespace}/${basename(c.config)}.state"
   }]
-  # Lambda requires that the bucket is located in the same region as the Lambda. The telia-oss bucket replicates objects to most regions.
-  s3_bucket = var.filename == null && var.s3_bucket == "telia-oss" ? "telia-oss-${data.aws_region.current.name}" : var.s3_bucket
 }
 
 resource "aws_s3_bucket" "bucket" {
@@ -63,40 +65,6 @@ data "aws_iam_policy_document" "lambda" {
     resources = [
       "${aws_s3_bucket.bucket.arn}",
       "${aws_s3_bucket.bucket.arn}/*",
-    ]
-  }
-
-  # Allow STS provider to assume any role with a sidecred = allow tag.
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    resources = [
-      "arn:aws:iam::*:role/*",
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "iam:ResourceTag/sidecred"
-      values   = ["allow"]
-    }
-  }
-
-  # Read/write SSM Parameters to support a SSM secret store.
-  # TODO: Expose the prefix as a variable (needs to match the path template)
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "ssm:PutParameter",
-      "ssm:DeleteParameter",
-    ]
-
-    resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/sidecred*",
     ]
   }
 

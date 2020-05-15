@@ -18,8 +18,6 @@ module "sidecred" {
 
   environment = {
     SIDECRED_RANDOM_PROVIDER_ROTATION_INTERVAL = "1m"
-    SIDECRED_STS_PROVIDER_ENABLED              = "true"
-    SIDECRED_STS_PROVIDER_SESSION_DURATION     = "20m"
     SIDECRED_SECRET_STORE_BACKEND              = "ssm"
     SIDECRED_SSM_STORE_PATH_TEMPLATE           = "/sidecred/{{ .Namespace }}/{{ .Name }}"
     SIDECRED_DEBUG                             = "true"
@@ -28,5 +26,29 @@ module "sidecred" {
   tags = {
     terraform   = "true"
     environment = "dev"
+  }
+}
+
+resource "aws_iam_role_policy" "sidecred" {
+  name   = "sidecred-permissions"
+  role   = module.sidecred.role_name
+  policy = data.aws_iam_policy_document.sidecred.json
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_policy_document" "sidecred" {
+  # Read/write SSM Parameters (required for the secret store)
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ssm:PutParameter",
+      "ssm:DeleteParameter",
+    ]
+
+    resources = [
+      "arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/sidecred*",
+    ]
   }
 }
