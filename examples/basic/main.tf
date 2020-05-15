@@ -17,11 +17,12 @@ module "sidecred" {
   }]
 
   environment = {
-    SIDECRED_STS_PROVIDER_ENABLED          = "true"
-    SIDECRED_STS_PROVIDER_SESSION_DURATION = "20m"
-    SIDECRED_SECRET_STORE_BACKEND          = "ssm"
-    SIDECRED_SSM_STORE_PATH_TEMPLATE       = "/sidecred/{{ .Namespace }}/{{ .Name }}"
-    SIDECRED_DEBUG                         = "true"
+    SIDECRED_RANDOM_PROVIDER_ROTATION_INTERVAL = "1m"
+    SIDECRED_STS_PROVIDER_ENABLED              = "true"
+    SIDECRED_STS_PROVIDER_SESSION_DURATION     = "20m"
+    SIDECRED_SECRET_STORE_BACKEND              = "ssm"
+    SIDECRED_SSM_STORE_PATH_TEMPLATE           = "/sidecred/{{ .Namespace }}/{{ .Name }}"
+    SIDECRED_DEBUG                             = "true"
   }
 
   tags = {

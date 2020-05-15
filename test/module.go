@@ -1,21 +1,44 @@
 package module
 
 import (
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/lambda"
+	"github.com/aws/aws-sdk-go/service/ssm"
 )
 
 // Expectations for the test suite.
 type Expectations struct {
-	NamePrefix string
+	Parameters []string
 }
 
 // RunTestSuite for the module.
-func RunTestSuite(t *testing.T, region, namePrefix string, expected Expectations) {
-	if expected.NamePrefix != namePrefix {
-		t.Fatalf("expected: %s, got: %s", expected.NamePrefix, namePrefix)
+func RunTestSuite(t *testing.T, lambdaARN, region string, expected Expectations) {
+	var (
+		sess      = NewSession(t, region)
+		testStart = time.Now()
+	)
+
+	time.Sleep(5 * time.Second)
+
+	// Invoke sidecred (and wait for it to finish).
+	InvokeFunction(t, sess, lambdaARN, strings.TrimSpace(`
+{"namespace":"example","config_path":"example/config.yml","state_path":"example/config.yml.state"}
+	`))
+
+	params := ListParameters(t, sess, expected.Parameters)
+	for _, param := range expected.Parameters {
+		p, ok := params[param]
+		if !ok {
+			t.Errorf("could not find expected parameter: %s", param)
+		}
+		if d := p.LastModifiedDate; !d.After(testStart) {
+			t.Errorf("parameter '%s' was not updated: %s", param, d.Format(time.RFC3339))
+		}
 	}
 }
 
@@ -28,4 +51,50 @@ func NewSession(t *testing.T, region string) *session.Session {
 		t.Fatalf("failed to create new AWS session: %s", err)
 	}
 	return sess
+}
+
+// InvokeFunction ...
+func InvokeFunction(t *testing.T, sess *session.Session, lambdaARN, payload string) {
+	c := lambda.New(sess)
+
+	_, err := c.Invoke(&lambda.InvokeInput{
+		FunctionName: aws.String(lambdaARN),
+		Payload:      []byte(payload),
+	})
+	if err != nil {
+		t.Fatalf("failed to invoke function: %s", err)
+	}
+}
+
+// ListParameters ...
+func ListParameters(t *testing.T, sess *session.Session, names []string) map[string]*ssm.ParameterMetadata {
+	c := ssm.New(sess)
+
+	var (
+		nextToken  *string
+		parameters = make(map[string]*ssm.ParameterMetadata)
+	)
+	for {
+		out, err := c.DescribeParameters(&ssm.DescribeParametersInput{
+			NextToken: nil,
+			ParameterFilters: []*ssm.ParameterStringFilter{
+				{
+					Key:    aws.String("Name"),
+					Option: aws.String("Equals"),
+					Values: aws.StringSlice(names),
+				},
+			},
+		})
+		if err != nil {
+			t.Fatalf("failed to get parameters by path: %s", err)
+		}
+		for _, p := range out.Parameters {
+			parameters[aws.StringValue(p.Name)] = p
+		}
+		nextToken = out.NextToken
+		if nextToken == nil {
+			break
+		}
+	}
+	return parameters
 }
