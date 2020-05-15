@@ -8,3 +8,6 @@ crash.log
 
 # Taskfile
 .task/
+
+# Generated config
+examples/complete/generated-config.yml
