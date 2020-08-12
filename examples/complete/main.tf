@@ -10,11 +10,22 @@ provider "aws" {
 resource "local_file" "config" {
   filename = "${path.module}/generated-config.yml"
   content  = <<EOF
-- type: aws:sts
-  name: sts-credential-1
-  config:
-    role_arn: ${aws_iam_role.example.arn}
-    duration: 900
+---
+version: 1
+
+namespace: example
+
+stores:
+  - type: ssm
+
+requests:
+  - store: ssm 
+    creds:
+    - type: aws:sts
+      name: sts-credential-1
+      config:
+        role_arn: ${aws_iam_role.example.arn}
+        duration: 900
 EOF
 }
 
@@ -37,8 +48,8 @@ module "sidecred" {
     SIDECRED_RANDOM_PROVIDER_ROTATION_INTERVAL = "20m"
     SIDECRED_STS_PROVIDER_ENABLED              = "true"
     SIDECRED_STS_PROVIDER_SESSION_DURATION     = "20m"
-    SIDECRED_SECRET_STORE_BACKEND              = "ssm"
-    SIDECRED_SSM_STORE_PATH_TEMPLATE           = "/sidecred/{{ .Namespace }}/{{ .Name }}"
+    SIDECRED_SSM_STORE_ENABLED                 = "true"
+    SIDECRED_SSM_STORE_SECRET_TEMPLATE         = "/sidecred/{{ .Namespace }}/{{ .Name }}"
     SIDECRED_DEBUG                             = "true"
     SIDECRED_ROTATION_WINDOW                   = "19m"
   }

@@ -18,8 +18,8 @@ module "sidecred" {
 
   environment = {
     SIDECRED_RANDOM_PROVIDER_ROTATION_INTERVAL = "1m"
-    SIDECRED_SECRET_STORE_BACKEND              = "ssm"
-    SIDECRED_SSM_STORE_PATH_TEMPLATE           = "/sidecred/{{ .Namespace }}/{{ .Name }}"
+    SIDECRED_SSM_STORE_ENABLED                 = "true"
+    SIDECRED_SSM_STORE_SECRET_TEMPLATE         = "/sidecred/{{ .Namespace }}/{{ .Name }}"
     SIDECRED_DEBUG                             = "true"
   }
 
