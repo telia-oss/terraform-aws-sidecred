@@ -1,4 +1,15 @@
-- type: random
-  name: random-string-3
-  config:
-    length: 20
+---
+version: 1
+
+namespace: example
+
+stores:
+  - type: ssm
+
+requests:
+  - store: ssm 
+    creds:
+    - type: random
+      name: random-string-3
+      config:
+        length: 20

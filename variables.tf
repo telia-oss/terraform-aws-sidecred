@@ -25,7 +25,7 @@ variable "s3_bucket" {
 variable "s3_key" {
   description = "The s3 key for the Lambda artifact."
   type        = string
-  default     = "sidecred-lambda/v0.5.0.zip"
+  default     = "sidecred-lambda/v0.7.0.zip"
 }
 
 variable "filename" {
