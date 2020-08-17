@@ -16,6 +16,12 @@ variable "environment" {
   type        = map(string)
 }
 
+variable "schedule_expression" {
+  description = "The scheduling expression for how often sidecred should run. For example, cron(0 */5 * ? * *) or rate(10 minutes)."
+  type        = string
+  default     = "rate(10 minutes)"
+}
+
 variable "s3_bucket" {
   description = "The bucket where the lambda function is uploaded."
   type        = string
