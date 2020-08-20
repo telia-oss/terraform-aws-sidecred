@@ -88,7 +88,7 @@ resource "aws_cloudwatch_event_rule" "main" {
   count               = length(local.configs)
   name_prefix         = "sidecred-${local.configs[count.index].namespace}"
   description         = "Trigger for ${local.configs[count.index].config_path}."
-  schedule_expression = "rate(10 minutes)"
+  schedule_expression = var.schedule_expression
   tags                = var.tags
 }
 
@@ -107,4 +107,3 @@ resource "aws_lambda_permission" "main" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.main[count.index].arn
 }
-
