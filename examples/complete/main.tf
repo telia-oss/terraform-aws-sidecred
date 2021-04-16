@@ -1,9 +1,9 @@
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 0.14"
 }
 
 provider "aws" {
-  region  = var.region
+  region = var.region
 }
 
 resource "local_file" "config" {

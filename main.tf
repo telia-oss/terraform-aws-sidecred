@@ -30,17 +30,17 @@ resource "aws_s3_bucket" "bucket" {
   tags = var.tags
 }
 
-data "local_file" "config"{
-  count=length(local.configs)
-  filename=var.configurations[count.index].config
+data "local_file" "config" {
+  count    = length(local.configs)
+  filename = var.configurations[count.index].config
 }
 
 resource "aws_s3_bucket_object" "configurations" {
-  count  = length(local.configs)
-  bucket = aws_s3_bucket.bucket.id
-  key    = local.configs[count.index].config_path
-  content=data.local_file.config[count.index].content
-  etag   = md5(data.local_file.config[count.index].content)
+  count   = length(local.configs)
+  bucket  = aws_s3_bucket.bucket.id
+  key     = local.configs[count.index].config_path
+  content = data.local_file.config[count.index].content
+  etag    = md5(data.local_file.config[count.index].content)
 }
 
 module "lambda" {
