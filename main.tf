@@ -30,17 +30,22 @@ resource "aws_s3_bucket" "bucket" {
   tags = var.tags
 }
 
+data "local_file" "config"{
+  count=length(local.configs)
+  filename=var.configurations[count.index].config
+}
+
 resource "aws_s3_bucket_object" "configurations" {
   count  = length(local.configs)
   bucket = aws_s3_bucket.bucket.id
   key    = local.configs[count.index].config_path
-  source = var.configurations[count.index].config
-  etag   = filemd5(var.configurations[count.index].config)
+  content=data.local_file.config[count.index].content
+  etag   = md5(data.local_file.config[count.index].content)
 }
 
 module "lambda" {
   source  = "telia-oss/lambda/aws"
-  version = "3.1.0"
+  version = "4.0.0"
 
   name_prefix      = var.name_prefix
   filename         = var.filename
@@ -63,7 +68,7 @@ data "aws_iam_policy_document" "lambda" {
     ]
 
     resources = [
-      "${aws_s3_bucket.bucket.arn}",
+      aws_s3_bucket.bucket.arn,
       "${aws_s3_bucket.bucket.arn}/*",
     ]
   }
