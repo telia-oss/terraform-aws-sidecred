@@ -1,10 +1,9 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.14"
 }
 
 provider "aws" {
-  version = ">= 2.61"
-  region  = var.region
+  region = var.region
 }
 
 module "sidecred" {

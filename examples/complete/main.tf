@@ -1,10 +1,9 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.14"
 }
 
 provider "aws" {
-  version = ">= 2.61"
-  region  = var.region
+  region = var.region
 }
 
 resource "local_file" "config" {
@@ -32,7 +31,9 @@ EOF
 module "sidecred" {
   source      = "../../"
   name_prefix = var.name_prefix
-
+  depends_on = [
+    local_file.config,
+  ]
   configurations = [
     {
       namespace = "example"
