@@ -19,7 +19,6 @@ locals {
 
 resource "aws_s3_bucket" "bucket" {
   bucket        = "${data.aws_caller_identity.current.account_id}-${var.name_prefix}"
-  region        = data.aws_region.current.name
   acl           = "private"
   force_destroy = true
 
