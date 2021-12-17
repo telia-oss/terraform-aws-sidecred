@@ -44,7 +44,7 @@ resource "aws_s3_bucket_object" "configurations" {
 
 module "lambda" {
   source  = "telia-oss/lambda/aws"
-  version = "4.0.0"
+  version = "4.1.1"
 
   name_prefix      = var.name_prefix
   filename         = var.filename
