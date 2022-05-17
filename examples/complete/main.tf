@@ -45,6 +45,8 @@ module "sidecred" {
     }
   ]
 
+  lambda_timeout = 900
+
   environment = {
     SIDECRED_RANDOM_PROVIDER_ROTATION_INTERVAL = "20m"
     SIDECRED_STS_PROVIDER_ENABLED              = "true"
