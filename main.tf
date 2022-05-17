@@ -48,6 +48,7 @@ module "lambda" {
 
   name_prefix      = var.name_prefix
   filename         = var.filename
+  timeout          = var.lambda_timeout
   s3_bucket        = local.s3_bucket
   s3_key           = var.s3_key
   handler          = "sidecred-lambda"

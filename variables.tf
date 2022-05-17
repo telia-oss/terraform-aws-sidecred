@@ -29,7 +29,7 @@ variable "s3_bucket" {
 }
 
 variable "s3_key" {
-  description = "The s3 key for the Lambda artifact."
+  description = "The s3 key for the lambda artifact."
   type        = string
   default     = "sidecred-lambda/v0.12.0.zip"
 }
@@ -38,6 +38,12 @@ variable "filename" {
   description = "Path to the lambda artifact in the local filesystem. Should be a zip file that contains the 'sidecred-lambda' executable."
   type        = string
   default     = null
+}
+
+variable "lambda_timeout" {
+  description = "The amount of time the sidecred lambda function has to run in seconds."
+  type        = number
+  default     = 300
 }
 
 variable "source_code_hash" {
