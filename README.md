@@ -3,7 +3,7 @@
 # terraform-aws-sidecred
 
 [![latest release](https://img.shields.io/github/v/release/telia-oss/terraform-aws-sidecred?style=flat-square)](https://github.com/telia-oss/terraform-aws-sidecred/releases/latest)
-[![build status](https://img.shields.io/github/workflow/status/telia-oss/terraform-aws-sidecred/workflow?label=build&logo=github&style=flat-square)](https://github.com/telia-oss/terraform-aws-sidecred/actions?query=workflow%3Atest)
+[![build status](https://img.shields.io/github/actions/workflow/status/telia-oss/terraform-aws-sidecred/main.yml?branch=master&logo=github&style=flat-square)](https://github.com/telia-oss/terraform-aws-sidecred/actions/workflows/main.yml)
 
 A terraform module for deploying [sidecred](https://github.com/telia-oss/sidecred) in your AWS environment.
 
