@@ -19,14 +19,21 @@ locals {
 
 resource "aws_s3_bucket" "bucket" {
   bucket        = "${data.aws_caller_identity.current.account_id}-${var.name_prefix}"
-  acl           = "private"
   force_destroy = true
+  tags          = var.tags
+}
 
-  versioning {
-    enabled = true
+resource "aws_s3_bucket_acl" "bucket" {
+  bucket = aws_s3_bucket.bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "bucket" {
+  bucket = aws_s3_bucket.bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
   }
-
-  tags = var.tags
 }
 
 data "local_file" "config" {
@@ -44,7 +51,7 @@ resource "aws_s3_bucket_object" "configurations" {
 
 module "lambda" {
   source  = "telia-oss/lambda/aws"
-  version = "4.1.1"
+  version = "4.2.0"
 
   name_prefix      = var.name_prefix
   filename         = var.filename
