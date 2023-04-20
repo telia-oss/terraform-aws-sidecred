@@ -1,13 +1,11 @@
 # Terraform
 **/.terraform
 **/*.tfstate*
+**/.terraform.lock.hcl
 crash.log
 
-# InteliJ IDE
+# IntelliJ IDE
 .idea/
 
 # Taskfile
 .task/
-
-# Generated config
-examples/complete/generated-config.yml
