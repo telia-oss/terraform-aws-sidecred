@@ -21,10 +21,6 @@ resource "aws_s3_bucket" "bucket" {
   bucket        = "${data.aws_caller_identity.current.account_id}-${var.name_prefix}"
   force_destroy = true
   tags          = var.tags
-
-  lifecycle {
-    ignore_changes = [acl, versioning]
-  }
 }
 
 resource "aws_s3_bucket_acl" "bucket" {
